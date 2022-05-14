@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: KvFront
+Version: 2.1.0
+Summary: KvFront is a gui tool for memcached & redis developed by GTK+3
+Home-page: UNKNOWN
+Author: Gavin W
+Author-email: UNKNOWN
+License: GPLv3
+Description: KvFront is a gui tool for memcached & redis developed by GTK+3
+Keywords: memcached,memcache,memcached GUI,memcached front,redis,redis GUI
+Platform: any
