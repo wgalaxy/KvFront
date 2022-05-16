@@ -108,6 +108,10 @@ class RedisHelper:
         setRet = self.rc.zadd(key,mapping)
         return setRet
 
+    def setbit(self, key, offset, value):
+        setRet = self.rc.setbit(key, offset, value)
+        return setRet
+
     def xadd(self, key, id, mapping):
         setRet = self.rc.xadd(key,mapping,id)
         return setRet

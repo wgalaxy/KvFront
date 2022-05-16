@@ -55,6 +55,13 @@ class NewRedisKey(object):
             msgdlg.run()
             msgdlg.destroy()
             return
+        
+        if value == "":
+            msgdlg = Gtk.MessageDialog(self.dlgNewKey, 0, Gtk.MessageType.INFO,
+                        Gtk.ButtonsType.CLOSE, "please enter value")
+            msgdlg.run()
+            msgdlg.destroy()
+            return
 
         tree_iter = cbtype.get_active_iter()
         if tree_iter != None:
@@ -171,4 +178,38 @@ class NewRedisKey(object):
                                             Gtk.ButtonsType.CLOSE, str(err))
                     msgdlg.run()
                     msgdlg.destroy()
+
+            elif type == "7":
+                lines = value.split("\n")
+                add_key_failed = True
+                for fl in lines:
+                    kv = fl.split(":",1)
+                    try:
+                        ret = self.redisHelper.setbit(key, int(kv[0]), int(kv[1]))
+                        print(ret)
+                        if ret == 0:
+                            add_key_failed = False
+                        else:
+                            msgdlg = Gtk.MessageDialog(self.dlgNewKey, 0, Gtk.MessageType.WARNING,
+                                                    Gtk.ButtonsType.CLOSE, ret)
+                            msgdlg.run()
+                            msgdlg.destroy()
+
+                    except Exception as err:
+                        msgdlg = Gtk.MessageDialog(self.dlgNewKey, 0, Gtk.MessageType.WARNING,
+                                                Gtk.ButtonsType.CLOSE, str(err))
+                        msgdlg.run()
+                        msgdlg.destroy()
+                if add_key_failed is False:
+                    msgdlg = Gtk.MessageDialog(self.dlgNewKey, 0, Gtk.MessageType.INFO,
+                        Gtk.ButtonsType.CLOSE, "add key successed")
+                    msgdlg.run()
+                    msgdlg.destroy()
+                    self.dlgNewKey.destroy()
+                else:
+                    msgdlg = Gtk.MessageDialog(self.dlgNewKey, 0, Gtk.MessageType.WARNING,
+                        Gtk.ButtonsType.CLOSE, "add key failed")
+                    msgdlg.run()
+                    msgdlg.destroy()
+                    self.dlgNewKey.destroy()
             

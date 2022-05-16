@@ -111,6 +111,7 @@
                   <item id="4" translatable="yes">Set</item>
                   <item id="5" translatable="yes">ZSet</item>
                   <item id="6" translatable="yes">Stream</item>
+                  <item id="7" translatable="yes">Bitmap</item>
                 </items>
               </object>
               <packing>
@@ -188,6 +189,11 @@ value2:score2
 id(* means auto generated)
 field1:value1
 field2:value2
+...
+
+5.Bitmap format
+offset:value
+offset:value
 ...</property>
                     <property name="wrap_mode">char</property>
                   </object>
