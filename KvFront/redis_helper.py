@@ -175,12 +175,8 @@ class RedisHelper:
         self.rc.flushall
     
     def execute_command(self, cmd):
-        try:
-            ret = self.rc.execute_command(cmd)
-            return ret
-        except Exception as err:
-            print(str(err))
-            return str(err)
+        ret = self.rc.execute_command(cmd)
+        return ret
 
     def __init__(self):
         self.rc = None

@@ -406,21 +406,18 @@ class KvFront():
                     self.builderStats.get_object("TreeViewResults2").append_column(column)
 
                 key = model[iter][0]
-                keylist = key.split(",")
                 try:
-                    values = self.redisHelper.get_multi(keylist)
+                    value = self.redisHelper.get(key)
+                    print(value)
+                except UnicodeDecodeError as e:
+                    value = e.object
                 except Exception as err:
                     msgdlg = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.ERROR,
                                             Gtk.ButtonsType.CLOSE, str(err))
                     msgdlg.run()
                     msgdlg.destroy()
                     return
-                i = 0
-                for v in values:
-                    if v == None:
-                        break
-                    store1.append(["string",keylist[i], v])
-                    i += 1
+                store1.append(["string", key, str(value)])
                 self.builderStats.get_object("TreeViewResults2").set_model(store1)
                
             elif model[iter][1] == "hash":
@@ -1142,7 +1139,13 @@ class KvFront():
             msgdlg.destroy()
             return
 
-        retc = self.redisHelper.execute_command(cmd)
+        try:
+            retc = self.redisHelper.execute_command(cmd)
+        except UnicodeDecodeError as e:
+            retc = e.object
+        except Exception as err:
+            retc = str(err)
+
         textbuffer = textview_cmdresult.get_buffer()
         textbuffer.set_text(str(retc))
  
@@ -1197,9 +1200,7 @@ class KvFront():
 
                     key = self.builderStats.get_object("entrykey").get_text()
                     keylist = key.split(",")
-                    print(keylist)
                     values = self.memHelper.get_multi(keylist)
-                    print(values)
 
                     store1 = Gtk.ListStore(str, str)
                     for i, column_title in enumerate(["key", "value"]):
