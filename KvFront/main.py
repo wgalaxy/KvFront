@@ -317,7 +317,13 @@ class KvFront():
 
                     self.redisIpPort = model[iter][0].hosts
                     self.db_sn = model[iter][0].db_sn
-                    connRet = self.redisHelper.connect(self.redisIpPort, self.password, self.db_sn)
+
+                    self.ssh_user = model[iter][0].ssh_user
+                    self.ssh_pwd = model[iter][0].ssh_pwd
+                    self.ssh_prikey = model[iter][0].ssh_prikey
+                    self.ssh_address = model[iter][0].ssh_address
+
+                    connRet = self.redisHelper.connect(self.redisIpPort, self.password, self.db_sn,self.ssh_user,self.ssh_pwd,self.ssh_prikey,self.ssh_address)
                     if connRet == 0:
                         dictd = self.redisHelper.stats()
                         #print(dictd)
@@ -328,7 +334,6 @@ class KvFront():
                         self.builderStats.get_object("TreeViewResults").connect("row-activated", self.treeview_result_row_activated_cb)
                         self.builderStats.get_object("TreeViewResults1").connect("row-activated", self.treeview_result1_row_activated_cb)
                         self.builderStats.get_object("TreeViewResults2").connect("row-activated", self.treeview_result2_row_activated_cb)
-                        print("ggggggggggggg")
                     else:
                         msgdlg = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.WARNING,
                                                     Gtk.ButtonsType.CLOSE, connRet)
@@ -360,7 +365,13 @@ class KvFront():
 
                     self.redisIpPort = model[iter][0].hosts
                     self.db_sn = model[iter][0].db_sn
-                    connRet = self.redisHelper.connect_cluster(self.redisIpPort, self.password, self.db_sn)
+
+                    self.ssh_user = model[iter][0].ssh_user
+                    self.ssh_pwd = model[iter][0].ssh_pwd
+                    self.ssh_prikey = model[iter][0].ssh_prikey
+                    self.ssh_address = model[iter][0].ssh_address
+
+                    connRet = self.redisHelper.connect_cluster(self.redisIpPort, self.password, self.db_sn,self.ssh_user,self.ssh_pwd,self.ssh_prikey,self.ssh_address)
                     if connRet == 0:
                         dictd = self.redisHelper.stats()
                         store = Gtk.ListStore(str, str)

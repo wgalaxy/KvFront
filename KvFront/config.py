@@ -34,7 +34,7 @@ class Config:
         self.cp.remove_section(servername)
         self.cp.write(open(FILE_SERVER_CFG, 'w'))
         
-    def addServer(self,servername,host,category,password):
+    def addServer(self, servername, host, category, password, ssh_user, ssh_pwd, ssh_prikey, ssh_address):
         if self.cp.has_section(servername):
             return 0
         else:
@@ -42,6 +42,10 @@ class Config:
             self.cp.set(servername, "host", host)
             self.cp.set(servername, "category",category)
             self.cp.set(servername, "password",password)
+            self.cp.set(servername, "ssh_user",ssh_user)
+            self.cp.set(servername, "ssh_pwd",ssh_pwd)
+            self.cp.set(servername, "ssh_prikey",ssh_prikey)
+            self.cp.set(servername, "ssh_address",ssh_address)
             self.cp.write(open(FILE_SERVER_CFG, 'w'))
             return 1
             

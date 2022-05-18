@@ -24,5 +24,9 @@ class RedisConninfo(GObject.GObject):
         self.hosts = GObject.property(type=str)
         self.category = GObject.property(type=str)
         self.password = GObject.property(type=str)
+        self.ssh_user = GObject.property(type=str)
+        self.ssh_pwd = GObject.property(type=str)
+        self.ssh_prikey = GObject.property(type=str)
+        self.ssh_address = GObject.property(type=str)
 
         

@@ -13,6 +13,7 @@
  #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
 from rediscluster import RedisCluster
+from sshtunnel import SSHTunnelForwarder
 import redis
 
 class RedisHelper:
@@ -31,41 +32,102 @@ class RedisHelper:
     def type(self,key):
         return self.rc.type(key)
 
-    def connect(self, ip_port, password, db_sn):
-        print("connect to redis" + ip_port)
+    def connect(self, endpoints, password, db_sn,ssh_user,ssh_pwd,ssh_prikey,ssh_address):
+        print("connect to redis:" + endpoints)
+        print("ssh_user:" + ssh_user)
         try:
-            ipport = ip_port.split(":")
-            if len(password) > 0:
-                self.rc = redis.StrictRedis(host=ipport[0],port=ipport[1],db=db_sn,password=password,decode_responses=True)
+            if ssh_user == "":
+                ip_port = endpoints.split(":")
+                if len(password) > 0:
+                    self.rc = redis.StrictRedis(host=ip_port[0],port=ip_port[1],db=db_sn,password=password,decode_responses=True)
+                else:
+                    self.rc = redis.StrictRedis(host=ip_port[0],port=ip_port[1],db=db_sn,decode_responses=True)
+                self.rc.client_list()
+                return 0
             else:
-                self.rc = redis.StrictRedis(host=ipport[0],port=ipport[1],db=db_sn,decode_responses=True)
-            self.rc.client_list()
-            return 0
+                print("SSH")
+                ip_port = endpoints.split(":")
+                ssh_ip_port=ssh_address.split(":")
+                self.ssh_server = SSHTunnelForwarder(
+                    ssh_address_or_host=(ssh_ip_port[0],int(ssh_ip_port[1])),
+                    ssh_username=ssh_user,
+                    ssh_pkey=ssh_prikey,
+                    ssh_password=ssh_pwd,
+                    # local_bind_address=('0.0.0.0', 10022),
+                    remote_bind_address=(ip_port[0], int(ip_port[1]))
+                )
+                self.ssh_server.start()
+                print(self.ssh_server.local_bind_port)
+                if len(password) > 0:
+                    self.rc = redis.StrictRedis(host='127.0.0.1',port=self.ssh_server.local_bind_port,db=db_sn,password=password,decode_responses=True)
+                else:
+                    self.rc = redis.StrictRedis(host='127.0.0.1',port=self.ssh_server.local_bind_port,db=db_sn,decode_responses=True)
+                self.rc.client_list()
+                return 0
+
         except redis.ConnectionError as err:
             print(str(err))
             return str(err)
+        except Exception as err2:
+            print(str(err2))
+            return str(err2)
 
-    def connect_cluster(self, ipports, password, db_sn):
+    def connect_cluster(self, endpoints, password, db_sn,ssh_user,ssh_pwd,ssh_prikey,ssh_address):
         try:
-            servers = ipports.split(",")
-            list_server = []
-            for i in servers:
-                ipport = i.split(":")
-                list_server.append({"host":ipport[0], "port":ipport[1]})
-            print(list_server)
-            if len(password) > 0:
-                self.rc = RedisCluster(startup_nodes=list_server,password=password,decode_responses=True)
+            if ssh_user == "":
+                servers = endpoints.split(",")
+                list_server = []
+                for i in servers:
+                    ipport = i.split(":")
+                    list_server.append({"host":ipport[0], "port":ipport[1]})
+                print(list_server)
+                if len(password) > 0:
+                    self.rc = RedisCluster(startup_nodes=list_server,password=password,decode_responses=True)
+                else:
+                    self.rc = RedisCluster(startup_nodes=list_server,decode_responses=True)
+                self.rc.client_list()
+                return 0
             else:
-                self.rc = RedisCluster(startup_nodes=list_server,decode_responses=True)
-            self.rc.client_list()
-            return 0
+                print("SSH")
+                servers = endpoints.split(",")
+                ssh_ip_port=ssh_address.split(":")
+                remote_bind_address = []
+                for i in servers:
+                    ipport = i.split(":")
+                    remote_bind_address.append((ipport[0],int(ipport[1])))
+                print("bbb")
+                self.ssh_server = SSHTunnelForwarder(
+                    ssh_address_or_host=(ssh_ip_port[0],int(ssh_ip_port[1])),
+                    ssh_username=ssh_user,
+                    ssh_pkey=ssh_prikey,
+                    ssh_password=ssh_pwd,
+                    # local_bind_address=('0.0.0.0', 10022),
+                    remote_bind_address=remote_bind_address[0]
+                )
+                print("ddddddddddddd")
+                self.ssh_server.start()
+                list_server = [
+                    {
+                        "host":'127.0.0.1',
+                        "port":self.ssh_server.local_bind_port
+                    }
+                ]
+                print(list_server)
+                if len(password) > 0:
+                    self.rc = RedisCluster(startup_nodes=list_server,password=password,decode_responses=True,skip_full_coverage_check=True)
+                else:
+                    self.rc = RedisCluster(startup_nodes=list_server,decode_responses=True,skip_full_coverage_check=True)
+                self.rc.client_list()
+                return 0
         except Exception as err:
-            print(str(err))
+            print("err:" + str(err))
             return str(err)
     
     def close(self):
         if self.rc is not None:
             self.rc.close()
+        if self.ssh_server is not None:
+            self.ssh_server.close()
     
     def scan_iter(self, key, count):
         vals = self.rc.scan_iter(key,count)
@@ -184,3 +246,4 @@ class RedisHelper:
 
     def __init__(self):
         self.rc = None
+        self.ssh_server = None

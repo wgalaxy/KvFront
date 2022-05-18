@@ -30,12 +30,27 @@ class Connection(object):
         
         self.builderAddConn.get_object("btnSaveConnection").connect("clicked", self.btnSaveConnection_clicked_cb)
         self.builderAddConn.get_object("btnClear").connect("clicked", self.btnClear_clicked_cb)
+        self.builderAddConn.get_object("btnChoosePriKey").connect("clicked", self.btnChoosePriKey_clicked_cb)
         self.cfg = Config()
         self.dlgAddServer.show_all()
         
     def btnClear_clicked_cb(self,button):
         self.builderAddConn.get_object("nameentry").set_text("")
         self.builderAddConn.get_object("hostsentry").set_text("")
+
+    def btnChoosePriKey_clicked_cb(self,button):
+        dialog = Gtk.FileChooserDialog("Please choose a file of PrivateKey", self.dlgAddServer,
+            Gtk.FileChooserAction.OPEN,
+            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+             "Select", Gtk.ResponseType.OK))
+        # dialog.set_default_size(800, 400)
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            print("Folder selected: " + dialog.get_filename())
+            self.builderAddConn.get_object("entry_sshpri").set_text(dialog.get_filename())
+        elif response == Gtk.ResponseType.CANCEL:
+            print("Cancel clicked")
+        dialog.destroy()
         
         
     def btnSaveConnection_clicked_cb(self, button):
@@ -44,9 +59,44 @@ class Connection(object):
         host = self.builderAddConn.get_object("hostsentry").get_text()
         category = self.builderAddConn.get_object("categorycbt").get_active_text()
         password = self.builderAddConn.get_object("pwdentry").get_text()
-        addret = self.cfg.addServer(name, host, category, password)
+
+        ssh_user = self.builderAddConn.get_object("entry_sshuser").get_text()
+        ssh_pwd = self.builderAddConn.get_object("entry_sshpwd").get_text()
+        ssh_prikey = self.builderAddConn.get_object("entry_sshpri").get_text()
+        ssh_address = self.builderAddConn.get_object("entry_sshaddress").get_text()
+
+        use_ssh = self.builderAddConn.get_object("chk_ssh").get_active()
+
+
+        if name == "":
+            msgdlg = Gtk.MessageDialog(self.dlgAddServer, 0, Gtk.MessageType.INFO,
+                                    Gtk.ButtonsType.CLOSE, "please enter connection name")
+            msgdlg.run()
+            msgdlg.destroy()
+            return
+        if host == "":
+            msgdlg = Gtk.MessageDialog(self.dlgAddServer, 0, Gtk.MessageType.INFO,
+                                    Gtk.ButtonsType.CLOSE, "please enter connection endpoints")
+            msgdlg.run()
+            msgdlg.destroy()
+            return
+        if use_ssh:
+            if ssh_user == "":
+                msgdlg = Gtk.MessageDialog(self.dlgAddServer, 0, Gtk.MessageType.INFO,
+                                    Gtk.ButtonsType.CLOSE, "please enter SSH user name")
+                msgdlg.run()
+                msgdlg.destroy()
+                return
+            if ssh_address == "":
+                msgdlg = Gtk.MessageDialog(self.dlgAddServer, 0, Gtk.MessageType.INFO,
+                                    Gtk.ButtonsType.CLOSE, "please enter SSH address")
+                msgdlg.run()
+                msgdlg.destroy()
+                return
+
+        addret = self.cfg.addServer(name, host, category, password, ssh_user, ssh_pwd, ssh_prikey, ssh_address)
         if addret==0:
-             msgdlg = Gtk.MessageDialog(self.builder.get_object("window1"), 0, Gtk.MessageType.INFO,
+             msgdlg = Gtk.MessageDialog(self.dlgAddServer, 0, Gtk.MessageType.INFO,
                                                Gtk.ButtonsType.CLOSE, "the server name is existed.")
              msgdlg.run()
              msgdlg.destroy()
@@ -79,5 +129,11 @@ class Connection(object):
                     rp.hosts = host
                     rp.category = category
                     rp.password = password
+
+                    rp.ssh_user = ssh_user
+                    rp.ssh_pwd = ssh_pwd
+                    rp.ssh_address = ssh_address
+                    rp.ssh_prikey = ssh_prikey
+
                     model.append(tp,(rp,))
                 self.dlgAddServer.destroy()
