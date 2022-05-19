@@ -92,6 +92,12 @@ class KvFront():
                     rp.hosts = serverinfo[0][1]
                     rp.category = serverinfo[1][1]
                     rp.password = serverinfo[2][1]
+
+                    rp.ssh_user = serverinfo[3][1]
+                    rp.ssh_pwd = serverinfo[4][1]
+                    rp.ssh_prikey = serverinfo[5][1]
+                    rp.ssh_address = serverinfo[6][1]
+                    
                     self.store.append(tp,(rp,))
             if serverinfo[1][1] == "Redis Cluster":
                 for db_sn in range(0,1):
@@ -101,6 +107,10 @@ class KvFront():
                     rp.hosts = serverinfo[0][1]
                     rp.category = serverinfo[1][1]
                     rp.password = serverinfo[2][1]
+                    rp.ssh_user = serverinfo[3][1]
+                    rp.ssh_pwd = serverinfo[4][1]
+                    rp.ssh_prikey = serverinfo[5][1]
+                    rp.ssh_address = serverinfo[6][1]
                     self.store.append(tp,(rp,))
 
         view = self.builder.get_object("treeview2")

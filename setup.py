@@ -44,7 +44,7 @@ setup(
     # zip_safe= True,
     platforms="any",
     python_requires='>=3.6',
-    install_requires=['python-memcached>=1.58', 'configparser>=3.5.0','redis>=3.5.2,<4.0.0','redis-py-cluster>=2.1.0','sshtunnel>0.3.0'],
+    install_requires=['python-memcached>=1.58', 'configparser>=3.5.0','redis>=4.1.0','sshtunnel>0.3.0'],
     
     # data_files=[(os.path.join(prefix,'kvfront','config'), glob('./config/*.conf')),
     # 	(os.path.join(prefix, 'applications'), ['./data/kvfront.desktop']),

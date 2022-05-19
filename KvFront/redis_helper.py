@@ -12,7 +12,8 @@
  #   You should have received a copy of the GNU General Public License
  #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
-from rediscluster import RedisCluster
+from redis.cluster import RedisCluster
+from redis.cluster import ClusterNode
 from sshtunnel import SSHTunnelForwarder
 import redis
 
@@ -34,7 +35,7 @@ class RedisHelper:
 
     def connect(self, endpoints, password, db_sn,ssh_user,ssh_pwd,ssh_prikey,ssh_address):
         print("connect to redis:" + endpoints)
-        print("ssh_user:" + ssh_user)
+        print(ssh_user)
         try:
             if ssh_user == "":
                 ip_port = endpoints.split(":")
@@ -79,7 +80,7 @@ class RedisHelper:
                 list_server = []
                 for i in servers:
                     ipport = i.split(":")
-                    list_server.append({"host":ipport[0], "port":ipport[1]})
+                    list_server.append(ClusterNode(ipport[0],int(ipport[1])))
                 print(list_server)
                 if len(password) > 0:
                     self.rc = RedisCluster(startup_nodes=list_server,password=password,decode_responses=True)
@@ -104,13 +105,9 @@ class RedisHelper:
                     # local_bind_address=('0.0.0.0', 10022),
                     remote_bind_address=remote_bind_address[0]
                 )
-                print("ddddddddddddd")
                 self.ssh_server.start()
                 list_server = [
-                    {
-                        "host":'127.0.0.1',
-                        "port":self.ssh_server.local_bind_port
-                    }
+                    ClusterNode('127.0.0.1',int(self.ssh_server.local_bind_port))
                 ]
                 print(list_server)
                 if len(password) > 0:
