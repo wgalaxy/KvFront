@@ -89,37 +89,49 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkButton" id="btnNewConnection">
-                <property name="width_request">30</property>
+              <object class="GtkButtonBox">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Add a Connection</property>
-                <property name="image">image1</property>
-                <property name="always_show_image">True</property>
-                <signal name="clicked" handler="btnAddServer_clicked_cb" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="btnRemoveConnection">
-                <property name="width_request">30</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Remove a connection</property>
-                <property name="image">image3</property>
-                <property name="always_show_image">True</property>
-                <signal name="clicked" handler="btnRemoveConnection_clicked" swapped="no"/>
+                <property name="can_focus">False</property>
+                <property name="layout_style">expand</property>
+                <child>
+                  <object class="GtkButton" id="btnNewConnection">
+                    <property name="width_request">30</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Add a Connection</property>
+                    <property name="image">image1</property>
+                    <property name="always_show_image">True</property>
+                    <signal name="clicked" handler="btnAddServer_clicked_cb" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="btnRemoveConnection">
+                    <property name="width_request">30</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Remove a connection</property>
+                    <property name="image">image3</property>
+                    <property name="always_show_image">True</property>
+                    <signal name="clicked" handler="btnRemoveConnection_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="position">0</property>
               </packing>
             </child>
           </object>
@@ -129,37 +141,49 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkButton" id="btnRefreshStats">
-                <property name="width_request">30</property>
+              <object class="GtkButtonBox">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Refresh current Stats</property>
-                <property name="image">image2</property>
-                <property name="always_show_image">True</property>
-                <signal name="clicked" handler="btnRefreshStats_clicked_cb" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="btnFlush">
-                <property name="width_request">30</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">flush</property>
-                <property name="image">image4</property>
-                <property name="always_show_image">True</property>
-                <signal name="clicked" handler="btnFlush_clicked_cb" swapped="no"/>
+                <property name="can_focus">False</property>
+                <property name="layout_style">expand</property>
+                <child>
+                  <object class="GtkButton" id="btnRefreshStats">
+                    <property name="width_request">30</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Refresh current Stats</property>
+                    <property name="image">image2</property>
+                    <property name="always_show_image">True</property>
+                    <signal name="clicked" handler="btnRefreshStats_clicked_cb" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="btnFlush">
+                    <property name="width_request">30</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">flush</property>
+                    <property name="image">image4</property>
+                    <property name="always_show_image">True</property>
+                    <signal name="clicked" handler="btnFlush_clicked_cb" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">3</property>
+                <property name="position">0</property>
               </packing>
             </child>
           </object>
