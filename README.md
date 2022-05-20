@@ -28,6 +28,8 @@ pip install KvFront
 
 ## Screenshots
 
-![image](https://a.fsdn.com/con/app/proj/memcachedfront/screenshots/d5121.png/max/max/1)
+![image](https://a.fsdn.com/con/app/proj/memcachedfront/screenshots/ss1.png/max/max/1)
 
-![image2](https://a.fsdn.com/con/app/proj/memcachedfront/screenshots/d5122.png/max/max/1)
+![image2](https://a.fsdn.com/con/app/proj/memcachedfront/screenshots/ss2.png/max/max/1)
+
+![image2](https://a.fsdn.com/con/app/proj/memcachedfront/screenshots/ss3.png/max/max/1)
