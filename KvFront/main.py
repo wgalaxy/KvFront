@@ -294,7 +294,6 @@ class KvFront():
                 self.builderStats = builderStats
                 self.init_detail_page(builderStats)
                 ret = self.memHelper.stats()
-                print(ret[0][1])
                 dictd = ret[0][1]
                 store = Gtk.ListStore(str, str)
                 for r in dictd:
@@ -809,7 +808,7 @@ class KvFront():
         dialog = Gtk.AboutDialog()
         dialog.set_title("About")
         dialog.set_name("KvFront")
-        dialog.set_version("2.3.2")
+        dialog.set_version("2.4.0")
         dialog.set_comments("A GUI Tool for Redis and Memcached")
         dialog.set_authors(["Gavin W <qmongofront@live.com>"])
         dialog.set_logo(GdkPixbuf.Pixbuf.new_from_file_at_size(os.path.join(os.path.expanduser('~'),".local/share/icons/kvfront.png"), 64, 64))

@@ -107,6 +107,11 @@ class Connection(object):
                 p.hosts = host
                 p.category = category
                 p.password = password
+
+                p.ssh_user = ssh_user
+                p.ssh_pwd = ssh_pwd
+                p.ssh_address = ssh_address
+                p.ssh_prikey = ssh_prikey
             
                 view =  self.pparent.builder.get_object("treeview2")
                 model = view.get_model()
