@@ -1,6 +1,10 @@
 Changelog
 ==============
 
+V2.5.0(2022-05-21)
+    - Connect to Memcached over SSH supported
+    - Fixed bug(Connnect to Redis Cluster over SSH failed)
+
 V2.4.0(2022-05-20)
     - New Redis Bitmap key supported
     - Connect to Redis over SSH supported
