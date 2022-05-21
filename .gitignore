@@ -1,0 +1,5 @@
+build
+dist
+KvFront/__pycache__
+KvFront.egg-info
+ui/*.ui~
