@@ -93,22 +93,22 @@ class RedisHelper:
                 servers = endpoints.split(",")
                 ssh_ip_port=ssh_address.split(":")
                 remote_bind_address = []
+                list_server = []
                 for i in servers:
                     ipport = i.split(":")
                     remote_bind_address.append((ipport[0],int(ipport[1])))
-                print("bbb")
+                print(remote_bind_address)
                 self.ssh_server = SSHTunnelForwarder(
                     ssh_address_or_host=(ssh_ip_port[0],int(ssh_ip_port[1])),
                     ssh_username=ssh_user,
                     ssh_pkey=ssh_prikey,
                     ssh_password=ssh_pwd,
                     # local_bind_address=('0.0.0.0', 10022),
-                    remote_bind_address=remote_bind_address[0]
+                    remote_bind_addresses=remote_bind_address
                 )
                 self.ssh_server.start()
-                list_server = [
-                    ClusterNode('127.0.0.1',int(self.ssh_server.local_bind_port))
-                ]
+                for p in self.ssh_server.local_bind_ports:
+                    list_server.append(ClusterNode('127.0.0.1',int(p)))
                 print(list_server)
                 if len(password) > 0:
                     self.rc = RedisCluster(startup_nodes=list_server,password=password,decode_responses=True,skip_full_coverage_check=True)
@@ -228,7 +228,6 @@ class RedisHelper:
         for k in keys:
             self.rc.delete(k)
         return 1
-
             
     def xrange(self, key):
         vals = self.rc.xrange(key,"-","+")

@@ -270,8 +270,14 @@ class KvFront():
                 print("You selected memcached", model[iter][0].hosts)
                 self.memHelper.close()
                 self.memip = model[iter][0].hosts
+
+                self.ssh_user = model[iter][0].ssh_user
+                self.ssh_pwd = model[iter][0].ssh_pwd
+                self.ssh_prikey = model[iter][0].ssh_prikey
+                self.ssh_address = model[iter][0].ssh_address
+                    
                 memiplist = self.memip.split(",")
-                self.memHelper.connect(memiplist)
+                self.memHelper.connect(memiplist,self.ssh_user,self.ssh_pwd,self.ssh_prikey,self.ssh_address)
 
                 self.btnrefreshstats.set_sensitive(True)
                 self.btnFlush.set_sensitive(True)
@@ -808,7 +814,7 @@ class KvFront():
         dialog = Gtk.AboutDialog()
         dialog.set_title("About")
         dialog.set_name("KvFront")
-        dialog.set_version("2.4.0")
+        dialog.set_version("2.5.0")
         dialog.set_comments("A GUI Tool for Redis and Memcached")
         dialog.set_authors(["Gavin W <qmongofront@live.com>"])
         dialog.set_logo(GdkPixbuf.Pixbuf.new_from_file_at_size(os.path.join(os.path.expanduser('~'),".local/share/icons/kvfront.png"), 64, 64))
