@@ -31,7 +31,7 @@ long_description = description + "\n\n" + changelog
 
 setup(
     name="KvFront",
-    version="2.5.0",
+    version="2.5.1",
     keywords=["memcached", "memcache", "memcached GUI", "memcached front","redis","redis GUI"],
     description="KvFront is a gui tool for memcached & redis developed by GTK+3",
     long_description=long_description,

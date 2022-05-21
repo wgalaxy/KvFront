@@ -13,6 +13,7 @@ pip install KvFront
 ~~~
 
 ## Features
+
 - Redis Standalone connection mode supported
 - Redis Cluster connection mode supported
 - Connect to memcached

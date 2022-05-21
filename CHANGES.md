@@ -1,7 +1,8 @@
 Changelog
 ==============
 
-V2.5.0(2022-05-21)
+
+V2.5.0 & V2.5.1(2022-05-21)
     - Connect to Memcached over SSH supported
     - Fixed bug(Connnect to Redis Cluster over SSH failed)
 

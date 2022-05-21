@@ -83,6 +83,10 @@ class KvFront():
             p.hosts = serverinfo[0][1]
             p.category = serverinfo[1][1]
             p.password = serverinfo[2][1]
+            p.ssh_user = serverinfo[3][1]
+            p.ssh_pwd = serverinfo[4][1]
+            p.ssh_prikey = serverinfo[5][1]
+            p.ssh_address = serverinfo[6][1]
             tp = self.store.append(None, (p,))
             if serverinfo[1][1] == "Redis Standalone":
                 for db_sn in range(0,16):
@@ -814,7 +818,7 @@ class KvFront():
         dialog = Gtk.AboutDialog()
         dialog.set_title("About")
         dialog.set_name("KvFront")
-        dialog.set_version("2.5.0")
+        dialog.set_version("2.5.1")
         dialog.set_comments("A GUI Tool for Redis and Memcached")
         dialog.set_authors(["Gavin W <qmongofront@live.com>"])
         dialog.set_logo(GdkPixbuf.Pixbuf.new_from_file_at_size(os.path.join(os.path.expanduser('~'),".local/share/icons/kvfront.png"), 64, 64))
