@@ -13,18 +13,18 @@ pip install KvFront
 ~~~
 
 ## Features
-1.   Redis Standalone connection mode supported
-2.   Redis Cluster connection mode supported
-3.   Connect to memcached
-4.   Connect to Redis over SSH supported
-5.   Add keys, delete keys, update value of memcached
-6.   Scan all Redis keys
-7.   Add keys to redis( String,List,Set,Hash,Sorted Set, Stream, Bitmap are supported )
-8.   Delete keys of redis
-9.   Delete data in redis data type
-10.  Update value by double clicking the value cell
-11.  Flush redis and memcached
-12.  View status of redis and memcached
+- Redis Standalone connection mode supported
+- Redis Cluster connection mode supported
+- Connect to memcached
+- Connect to Redis and Memcached over SSH supported
+- Add keys, delete keys, update value of memcached
+- Scan all Redis keys
+- Add keys to redis( String,List,Set,Hash,Sorted Set, Stream, Bitmap are supported )
+- Delete keys of redis
+- Delete data in redis data type
+- Update value by double clicking the value cell
+- Flush redis and memcached
+- View status of redis and memcached
 
 ## Screenshots
 
