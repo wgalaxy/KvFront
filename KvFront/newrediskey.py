@@ -15,6 +15,8 @@
 from gi.repository import Gtk
 from KvFront.constants import *
 from KvFront.redis_helper import *
+from redis.commands.json.path import Path
+import json
 
 class NewRedisKey(object):
 
@@ -89,7 +91,7 @@ class NewRedisKey(object):
                                             Gtk.ButtonsType.CLOSE, ret)
                     msgdlg.run()
                     msgdlg.destroy()
-            if type == "2":
+            elif type == "2":
                 field_line = value.split("\n")
                 mapping = {}
                 for fl in field_line:
@@ -212,4 +214,27 @@ class NewRedisKey(object):
                     msgdlg.run()
                     msgdlg.destroy()
                     self.dlgNewKey.destroy()
+
+            elif type == "8":
+                # print(Path.root_path())
+                try:
+                    ret = self.redisHelper.set_json(key, Path.root_path(), json.loads(value))
+                    print(ret)
+                    if ret is True:
+                        msgdlg = Gtk.MessageDialog(self.dlgNewKey, 0, Gtk.MessageType.INFO,
+                                                Gtk.ButtonsType.CLOSE, "add key successed")
+                        msgdlg.run()
+                        msgdlg.destroy()
+                        self.dlgNewKey.destroy()
+                    else:
+                        msgdlg = Gtk.MessageDialog(self.dlgNewKey, 0, Gtk.MessageType.WARNING,
+                                                Gtk.ButtonsType.CLOSE, ret)
+                        msgdlg.run()
+                        msgdlg.destroy()
+                except Exception as err:
+                    msgdlg = Gtk.MessageDialog(self.dlgNewKey, 0, Gtk.MessageType.WARNING,
+                                                Gtk.ButtonsType.CLOSE, str(err))
+                    msgdlg.run()
+                    msgdlg.destroy()
+
             

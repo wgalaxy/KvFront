@@ -29,6 +29,7 @@ from KvFront.selected_obj import *
 from KvFront.redis_conninfo import *
 from KvFront.config import *
 from KvFront.constants import *
+from redis.commands.json.path import Path
 import json
 import sys
 # gi.require_version('Gtk', '3.0') 
@@ -406,6 +407,38 @@ class KvFront():
                         msgdlg.run()
                         msgdlg.destroy()
 
+
+    def show_json_in_treeview(self, store, value, it, path, depth=-1): 
+        if isinstance(value,list):
+            index = 0
+            for i in value:
+                if index == 0:
+                    ppath = path
+                    path = path + "[" + str(index) + "]"
+                    index += 1
+                else:
+                    path = ppath + "[" + str(index) + "]"
+                    index += 1
+                self.show_json_in_treeview(store, i, it, path, depth)
+        elif isinstance(value, dict):
+            depth += 1
+            it = store.append(it, ["{}", "",  "", path])
+            i = 0
+            for k,v in value.items():
+                if i == 0:
+                    ppath = path
+                    path = path + "." + k        
+                else:
+                    path = ppath + "." + k
+                tmp_it = store.append(it, ["ReJSON", k,  str(v), path])
+                if isinstance(v, list):
+                    it = tmp_it
+                    # path = path + "[" + str(i) + "]"
+                i += 1
+                self.show_json_in_treeview(store, v, it, path, depth)
+        else:
+            print(value)
+
     def treeview_result1_row_activated_cb(self, treeview, path, column):
         model = treeview.get_model()
         iter = model.get_iter(path)
@@ -522,8 +555,6 @@ class KvFront():
                 self.builderStats.get_object("TreeViewResults2").set_model(store1)
 
             elif model[iter][1] == "set":
-                # value=self.redisHelper.smembers(model[iter][0])
-                # svalue = str(value)
 
                 columns = self.builderStats.get_object("TreeViewResults2").get_columns()
                 for c in columns:
@@ -555,8 +586,6 @@ class KvFront():
                 self.builderStats.get_object("TreeViewResults2").set_model(store1)
 
             elif model[iter][1] == "zset":
-                # value=self.redisHelper.zrange(model[iter][0],0,-1)
-                # svalue = str(value)
 
                 columns = self.builderStats.get_object("TreeViewResults2").get_columns()
                 for c in columns:
@@ -588,8 +617,6 @@ class KvFront():
                 self.builderStats.get_object("TreeViewResults2").set_model(store1)
             
             elif model[iter][1] == "stream":
-                # value=self.redisHelper.xrange(model[iter][0])
-                # svalue = str(value)
 
                 columns = self.builderStats.get_object("TreeViewResults2").get_columns()
                 for c in columns:
@@ -618,24 +645,55 @@ class KvFront():
                     for v1 in v[1]:
                         store1.append(["stream", key, v[0], v1, v[1][v1]])
                 self.builderStats.get_object("TreeViewResults2").set_model(store1)
-
-
-            # txtviewdetail = self.builderStats.get_object("txt_view_value_detail1")
-            # valuebuffer = txtviewdetail.get_buffer()
-            # lmanager = GtkSource.LanguageManager.get_default()
-            # language = lmanager.get_language("json")      
-            # valuebuffer.set_language(language)
             
-            # try:
-            #     print("---"+svalue)
-            #     obj_val = json.loads(svalue, encoding='utf-8')
-            #     valuebuffer.set_highlight_syntax(True)
-            #     formated_json_val = json.dumps(obj_val, sort_keys=True, indent=2)
-            #     valuebuffer.set_text(formated_json_val)
-            # except ValueError:
-            #     print("not json format")
-            #     valuebuffer.set_highlight_syntax(False) 
-            #     valuebuffer.set_text(svalue)
+            elif model[iter][1] == "ReJSON-RL":
+                columns = self.builderStats.get_object("TreeViewResults2").get_columns()
+                for c in columns:
+                    self.builderStats.get_object("TreeViewResults2").remove_column(c)
+                store1 = Gtk.TreeStore(str, str, str,str)
+                for i, column_title in enumerate(["type","field", "value","path"]):
+                    renderer = Gtk.CellRendererText()
+                    column = Gtk.TreeViewColumn(column_title, renderer, text=i)
+                    column.set_sizing(Gtk.TreeViewColumnSizing.GROW_ONLY)
+                    column.set_resizable(True)
+                    column.set_min_width(200)
+                    if column_title == "path":
+                        column.set_visible(False)
+                    # if column_title == "value":
+                    #     renderer.set_property("editable", True)
+                    #     renderer.connect("edited", self.value_editing_done, store1)
+                    self.builderStats.get_object("TreeViewResults2").append_column(column)
+
+                key = model[iter][0]
+                try:
+                    value = self.redisHelper.get_json(key)
+                    print(value)
+                    json_value = json.dumps(value)
+                except Exception as err:
+                    msgdlg = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.ERROR,
+                                            Gtk.ButtonsType.CLOSE, str(err))
+                    msgdlg.run()
+                    msgdlg.destroy()
+                    return
+                self.show_json_in_treeview(store1, value, None,"")
+
+                self.builderStats.get_object("TreeViewResults2").set_model(store1)
+
+                txtviewdetail = self.builderStats.get_object("txt_view_value_detail1")
+                valuebuffer = txtviewdetail.get_buffer()
+                lmanager = GtkSource.LanguageManager.get_default()
+                language = lmanager.get_language("json")      
+                valuebuffer.set_language(language)
+                
+                try:
+                    obj_val = json.loads(json_value)
+                    valuebuffer.set_highlight_syntax(True)
+                    formated_json_val = json.dumps(obj_val, sort_keys=True, indent=2)
+                    valuebuffer.set_text(formated_json_val)
+                except ValueError:
+                    print("not json format")
+                    valuebuffer.set_highlight_syntax(False) 
+                    valuebuffer.set_text(json_value)
 
     def treeview_result2_row_activated_cb(self, treeview, path, column):
         model = treeview.get_model()
@@ -679,6 +737,20 @@ class KvFront():
                     self.selectedObj.type=model[iter][0]
                     self.selectedObj.key=model[iter][1]
                     self.selectedObj.id=model[iter][2]
+                elif model[iter][0] == "ReJSON":
+                    self.selectedObj.type=model[iter][0]
+                    self.selectedObj.key=model[iter][1]
+                    self.selectedObj.path=model[iter][3]
+                    return
+                elif model[iter][0] == "{}":
+                    if model[iter][3] == "":
+                        return
+                    else:
+                        self.selectedObj.type=model[iter][0]
+                        self.selectedObj.key=model[iter][1]
+                        self.selectedObj.path=model[iter][3]
+                        return
+
 
             self.btnRemoveData.disconnect(self.hidBtnRemoveData)
             self.hidBtnRemoveData = self.btnRemoveData.connect("clicked", self.btnRemoveData_clicked_cb, model, iter)
@@ -818,7 +890,7 @@ class KvFront():
         dialog = Gtk.AboutDialog()
         dialog.set_title("About")
         dialog.set_name("KvFront")
-        dialog.set_version("2.5.1")
+        dialog.set_version("2.6.0")
         dialog.set_comments("A GUI Tool for Redis and Memcached")
         dialog.set_authors(["Gavin W <qmongofront@live.com>"])
         dialog.set_logo(GdkPixbuf.Pixbuf.new_from_file_at_size(os.path.join(os.path.expanduser('~'),".local/share/icons/kvfront.png"), 64, 64))
@@ -1029,6 +1101,9 @@ class KvFront():
                     prompt_str = "value"
                 elif self.selectedObj.type == "zset":
                     prompt_str = "value"
+                elif self.selectedObj.type == "ReJSON" or self.selectedObj.type == "{}":
+                    prompt_str = "JSON Field"
+
                 msgdlg = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.INFO,
                                                     Gtk.ButtonsType.OK_CANCEL, "Confirm to remove the selected " + prompt_str + "?")
                 response = msgdlg.run()
@@ -1053,6 +1128,11 @@ class KvFront():
                             ret = self.redisHelper.srem(self.selectedObj.key, self.selectedObj.value)
                         if self.selectedObj.type == "zset":
                             ret = self.redisHelper.zrem(self.selectedObj.key, self.selectedObj.value)
+                        if self.selectedObj.type == "ReJSON" or self.selectedObj.type == "{}":
+                            if self.selectedObj.path != "":
+                                ret = self.redisHelper.del_json(self.selected_redis_key, Path(self.selectedObj.path))
+                            else:
+                                return
                         
                         print("remove data ret:")
                         print(ret)

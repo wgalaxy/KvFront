@@ -233,6 +233,18 @@ class RedisHelper:
         vals = self.rc.xrange(key,"-","+")
         return vals
 
+    def set_json(self, key, path, value):
+        vals = self.rc.json().set(key, path, value)
+        return vals
+    
+    def get_json(self, key):
+        vals = self.rc.json().get(key)
+        return vals
+
+    def del_json(self, key, path):
+        vals = self.rc.json().delete(key, path)
+        return vals
+
     def flush(self):
         self.rc.flushall
     

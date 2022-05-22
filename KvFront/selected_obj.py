@@ -25,5 +25,6 @@ class SelectedObj(GObject.GObject):
         self.value = GObject.property(type=str)
         self.id = GObject.property(type=str)
         self.lindex = GObject.property(type=int)
+        self.path = GObject.property(type=str)
 
         
