@@ -7,10 +7,19 @@ Its highlights include the ability to manage Redis and Memcached. It supports th
 
 ## Installation
 
+### 1. Linux
+
 KvFront is now available in PyPI. KvFront could be installed using pip:
 ~~~
 pip install KvFront
 ~~~
+
+### 2. Windows
+
+KvFront is supported running on Windows64.
+-  download KvFront-2.6.0-win64.7z to local
+-  un7z it to the local directory , the local dir is supposed to be "d:\KvFront"
+-  double click "d:\KvFront\bin\KvFront.exe"
 
 ## Features
 
